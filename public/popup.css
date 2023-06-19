@@ -1,0 +1,42 @@
+* {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
+html {
+    overflow-y: scroll;
+    overflow-x: hidden;
+    width: 750px;
+}
+
+body {
+    width: 728px;
+    height: 450px;
+    padding: 6px;
+}
+
+a,
+a:visited,
+a:active {
+    text-decoration: none;
+    color: rgb(69, 135, 221);
+}
+
+a:hover {
+    color: rgb(50, 97, 158);
+}
+
+table {
+    width: 100%;
+}
+
+td,
+th {
+    vertical-align: top;
+    padding-right: 8px;
+}
+
+input {
+    outline: none;
+}
