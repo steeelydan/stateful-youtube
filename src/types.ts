@@ -1,5 +1,4 @@
 export type HistoryItem = {
-    url: string;
     channel: string;
     title: string;
     updated: string;
@@ -9,4 +8,8 @@ export type HistoryItem = {
 
 export type SavedHistoryItem = { [videoId: string]: HistoryItem };
 
-export type FormattedHistoryItem = HistoryItem & { searchChannel: string; searchTitle: string };
+export type FormattedHistoryItem = HistoryItem & {
+    id: string;
+    searchChannel: string;
+    searchTitle: string;
+};

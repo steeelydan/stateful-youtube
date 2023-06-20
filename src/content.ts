@@ -2,9 +2,16 @@ import type { HistoryItem, SavedHistoryItem } from './types';
 
 (async (): Promise<void> => {
     let currentUrl = window.location.href;
-    let jumpedToTime = false;
+    let jumpedToPosition = false;
+
+    let htmlVideoPlayer: HTMLVideoElement | null = null;
+    let historyItem: HistoryItem | null = null;
+    let titleDiv: HTMLDivElement | null = null;
+    let channelLink: HTMLLinkElement | null = null;
 
     setInterval(async () => {
+        const domAccessBenchStart = performance.now();
+
         const url = new URL(window.location.href);
 
         if (url.pathname === '/watch') {
@@ -12,72 +19,105 @@ import type { HistoryItem, SavedHistoryItem } from './types';
 
             const videoId = url.searchParams.get('v');
 
-            const htmlVideoPlayer = document.getElementsByTagName('video')[0];
-
-            if (!videoId || !htmlVideoPlayer) {
+            if (!videoId) {
                 return;
             }
 
-            const savedVideoHistory: SavedHistoryItem = (await browser.storage.local.get(
-                'video_' + videoId
-            )) as SavedHistoryItem;
-
-            let videoHistory: HistoryItem | null = null;
-
-            if (savedVideoHistory) {
-                videoHistory = savedVideoHistory['video_' + videoId];
+            if (!htmlVideoPlayer) {
+                htmlVideoPlayer = document.getElementsByTagName('video')[0];
+                console.debug('SFYT: Got video player from DOM');
             }
 
-            //  Jump to current time only if newly loaded
-            if (videoHistory && !jumpedToTime) {
-                htmlVideoPlayer.currentTime = Math.floor(videoHistory.time);
-                jumpedToTime = true;
+            // I suppose clientside rendered elements might still be missing from the page.
+            if (!htmlVideoPlayer) {
+                return;
+            }
+
+            if (jumpedToPosition && htmlVideoPlayer.paused) {
+                console.debug(
+                    'SFYT: Early return: DOM access in interval: ' +
+                        (performance.now() - domAccessBenchStart) +
+                        ' ms'
+                );
 
                 return;
             }
 
+            if (!historyItem) {
+                const savedHistoryItem: SavedHistoryItem = (await browser.storage.local.get(
+                    'video_' + videoId
+                )) as SavedHistoryItem;
+
+                console.debug('SFYT: Got historyItem from storage');
+
+                if (savedHistoryItem) {
+                    historyItem = savedHistoryItem['video_' + videoId];
+                }
+            }
+
+            // We do not abort if historyItem missing - in this case we've simply not seen the video before.
+
+            //  Jump to current time only if video seen before
+            if (historyItem && !jumpedToPosition) {
+                htmlVideoPlayer.currentTime = Math.floor(historyItem.time);
+                jumpedToPosition = true;
+
+                return;
+            }
+
+            // Reset when different video is loaded
             if (url.href !== currentUrl) {
                 currentUrl = url.href;
-                jumpedToTime = false;
+                jumpedToPosition = false;
             }
 
             // WRITING SECTION
 
-            if (htmlVideoPlayer.paused) {
-                return;
-            }
-
             const time = htmlVideoPlayer.currentTime;
             const duration = htmlVideoPlayer.duration;
 
-            const metaContainer = document.querySelector('.watch-active-metadata');
-            const titleContainer = metaContainer?.querySelector('div#title');
-            const titleDiv = titleContainer?.querySelector('yt-formatted-string') as HTMLDivElement;
+            if (!titleDiv) {
+                titleDiv = document.querySelector(
+                    '.watch-active-metadata div#title yt-formatted-string'
+                ) as HTMLDivElement;
+
+                console.debug('SFYT: Got title div from DOM');
+            }
 
             if (!titleDiv) {
                 return;
             }
 
-            const channelDiv = metaContainer?.querySelector('yt-formatted-string.ytd-channel-name');
-            const channelLink = channelDiv?.querySelector('a');
-            const channel = channelLink?.innerText;
+            if (!channelLink) {
+                channelLink = document.querySelector(
+                    '.watch-active-metadata yt-formatted-string.ytd-channel-name a'
+                ) as HTMLLinkElement;
 
-            if (!channel) {
+                console.debug('SFYT: Got channel link from DOM');
+            }
+
+            if (!channelLink) {
                 return;
             }
 
-            videoHistory = {
-                url: window.location.href,
-                channel: channel,
+            // We always write the whole current data.
+            historyItem = {
+                channel: channelLink.innerText,
                 title: titleDiv.innerText,
                 updated: new Date().toISOString(),
                 time: time,
                 duration: duration
             };
 
-            browser.storage.local.set({ ['video_' + videoId]: videoHistory });
+            browser.storage.local.set({ ['video_' + videoId]: historyItem });
 
-            jumpedToTime = true;
+            jumpedToPosition = true;
         }
+
+        console.debug(
+            'SFYT: DOM access in interval: ' +
+                (performance.now() - domAccessBenchStart) +
+                ' ms'
+        );
     }, 1000);
 })();

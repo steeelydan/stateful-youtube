@@ -1,3 +1,4 @@
+import { entryRowElCache } from '../cache/entryRowElCache';
 import { fracSecondsToTime } from '../utils';
 import { ProgressBar } from './ProgressBar';
 
@@ -49,6 +50,14 @@ export const HistoryList = ({ containerEl, history }: Props): void => {
     tableEl.appendChild(headRowEl);
 
     history.forEach((entry) => {
+        const cachedEntryRowEl = entryRowElCache[entry.id];
+
+        if (cachedEntryRowEl) {
+            tableEl.appendChild(cachedEntryRowEl);
+
+            return;
+        }
+
         const entryRowEl = document.createElement('tr');
         entryRowEl.style.marginBottom = '4px';
 
@@ -56,7 +65,7 @@ export const HistoryList = ({ containerEl, history }: Props): void => {
         ytLinkEl.innerText = entry.title;
         ytLinkEl.target = '_blank';
         ytLinkEl.rel = 'noopener noreferrer';
-        const newUrl = new URL(entry.url);
+        const newUrl = new URL('https://www.youtube.com/watch?v=' + entry.id);
         ytLinkEl.href = `${newUrl.toString()}`;
 
         const entryChannelColEl = document.createElement('td');
@@ -87,10 +96,14 @@ export const HistoryList = ({ containerEl, history }: Props): void => {
         entryRowEl.appendChild(entryDurationColEl);
         entryRowEl.appendChild(percentColEl);
 
+        if (!cachedEntryRowEl) {
+            entryRowElCache[entry.id] = entryRowEl;
+        }
+
         tableEl.appendChild(entryRowEl);
     });
 
     containerEl.appendChild(tableEl);
 
-    console.debug('Benchmark: HistoryList: ' + (performance.now() - historyListBenchStart) + ' ms');
+    console.debug('SFYT: HistoryList: ' + (performance.now() - historyListBenchStart) + ' ms');
 };

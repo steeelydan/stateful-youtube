@@ -7,12 +7,13 @@ Save watched YouTube videos & playing positions.
 ## Requirements
 
 -   bash (Linux) or git-bash (Windows)
--   Build: Node 18 LTS & npm 8. Tested on:
-    -   node: 18.12.1
-    -   npm: 8.19.2
--   Dist: 7zip
--   Tested on Ubuntu 22.04
--   Tested on Firefox 108.0.1
+-   For building: Node 18 LTS & npm 8. Tested on:
+    -   node: 18.16.0
+    -   npm: 9.5.1
+-   For dist: 7zip
+    -   Windows: Add 7zip to PATH
+-   Tested on Ubuntu 22.04 & Windows 10
+-   Tested on Firefox 114.0.2
 -   (Works in Chrome as long as v2 extensions are permitted) TODO not tested
 
 ## Install dependencies

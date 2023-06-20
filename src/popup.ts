@@ -23,6 +23,7 @@ import type { FormattedHistoryItem, HistoryItem } from './types';
 
             formattedHistory.push({
                 ...historyItem,
+                id: allItemsEntries[i][0].slice(6),
                 searchChannel: historyItem.channel.toLowerCase(),
                 searchTitle: historyItem.title.toLowerCase()
             });
@@ -32,7 +33,7 @@ import type { FormattedHistoryItem, HistoryItem } from './types';
     formattedHistory = formattedHistory.sort((a, b) => (a.updated > b.updated ? -1 : 1));
 
     console.debug(
-        'Benchmark: Loading & formatting data: ' + (performance.now() - benchStart) + ' ms'
+        'SFYT: Loading & formatting data: ' + (performance.now() - benchStart) + ' ms'
     );
 
     let filteredHistory = formattedHistory;
@@ -58,7 +59,7 @@ import type { FormattedHistoryItem, HistoryItem } from './types';
         }
 
         console.debug(
-            'Benchmark: Search filtering: ' + (performance.now() - searchBenchStart) + ' ms'
+            'SFYT: Search filtering: ' + (performance.now() - searchBenchStart) + ' ms'
         );
 
         HistoryList({ containerEl: appContainerEl, history: filteredHistory });
