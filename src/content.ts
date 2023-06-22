@@ -1,4 +1,4 @@
-import type { HistoryItem, SavedHistoryItem } from './types';
+import type { HistoryItem, SavedHistoryItems } from './types';
 
 (async (): Promise<void> => {
     let currentUrl = window.location.href;
@@ -44,9 +44,9 @@ import type { HistoryItem, SavedHistoryItem } from './types';
             }
 
             if (!historyItem) {
-                const savedHistoryItem: SavedHistoryItem = (await browser.storage.local.get(
+                const savedHistoryItem: SavedHistoryItems = (await browser.storage.local.get(
                     'video_' + videoId
-                )) as SavedHistoryItem;
+                )) as SavedHistoryItems;
 
                 console.debug('SFYT: Got historyItem from storage');
 

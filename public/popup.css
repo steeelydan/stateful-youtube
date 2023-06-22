@@ -5,9 +5,8 @@
 }
 
 html {
-    overflow-y: scroll;
-    overflow-x: hidden;
     width: 750px;
+    overflow-x: hidden;
 }
 
 body {

@@ -6,7 +6,8 @@ module.exports = (env, argv) => {
         devtool: env.MODE === 'production' ? false : 'source-map',
         entry: {
             content: './src/content.ts',
-            popup: './src/popup.ts'
+            popup: './src/popup.ts',
+            options: './src/options.ts'
         },
         module: {
             rules: [
@@ -18,7 +19,7 @@ module.exports = (env, argv) => {
             ]
         },
         resolve: {
-            extensions: ['.tsx', '.ts', '.js']
+            extensions: ['.ts', '.js']
         },
         output: {
             filename: '[name].js',

@@ -6,7 +6,7 @@ export type HistoryItem = {
     duration: number;
 };
 
-export type SavedHistoryItem = { [videoId: string]: HistoryItem };
+export type SavedHistoryItems = { [videoId: string]: HistoryItem };
 
 export type FormattedHistoryItem = HistoryItem & {
     id: string;
