@@ -17,6 +17,16 @@ import type { HistoryItem, SavedHistoryItems } from './types';
         if (url.pathname === '/watch') {
             // READING SECTION
 
+            // Reset when different video is loaded
+            if (url.href !== currentUrl) {
+                currentUrl = url.href;
+                jumpedToPosition = false;
+                historyItem = null;
+                titleDiv = null;
+                channelLink = null;
+                jumpedToPosition = false;
+            }
+
             const videoId = url.searchParams.get('v');
 
             if (!videoId) {
@@ -63,12 +73,6 @@ import type { HistoryItem, SavedHistoryItems } from './types';
                 jumpedToPosition = true;
 
                 return;
-            }
-
-            // Reset when different video is loaded
-            if (url.href !== currentUrl) {
-                currentUrl = url.href;
-                jumpedToPosition = false;
             }
 
             // WRITING SECTION
