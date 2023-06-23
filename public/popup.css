@@ -7,12 +7,14 @@
 html {
     width: 750px;
     overflow-x: hidden;
+    overflow-y: scroll;
 }
 
 body {
     width: 728px;
     height: 450px;
     padding: 6px;
+    padding-right: 15px;
 }
 
 a,
@@ -38,4 +40,5 @@ th {
 
 input {
     outline: none;
+    padding: 2px 3px;
 }

@@ -32,9 +32,7 @@ import type { FormattedHistoryItem, HistoryItem } from './types';
 
     formattedHistory = formattedHistory.sort((a, b) => (a.updated > b.updated ? -1 : 1));
 
-    console.debug(
-        'SFYT: Loading & formatting data: ' + (performance.now() - benchStart) + ' ms'
-    );
+    console.debug(`SFYT: Loading & formatting data: ${performance.now() - benchStart} ms`);
 
     let filteredHistory = formattedHistory;
 
@@ -58,9 +56,7 @@ import type { FormattedHistoryItem, HistoryItem } from './types';
             filteredHistory = [...formattedHistory];
         }
 
-        console.debug(
-            'SFYT: Search filtering: ' + (performance.now() - searchBenchStart) + ' ms'
-        );
+        console.debug(`SFYT: Search filtering: ${performance.now() - searchBenchStart} ms`);
 
         HistoryList({ containerEl: appContainerEl, history: filteredHistory });
     };

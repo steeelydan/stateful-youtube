@@ -1,61 +1,28 @@
 import { entryRowElCache } from '../cache/entryRowElCache';
 import { fracSecondsToTime } from '../utils';
 import { ProgressBar } from './ProgressBar';
-
 import type { FormattedHistoryItem } from '../types';
 
 type Props = { containerEl: HTMLElement; history: FormattedHistoryItem[] };
 
-export const HistoryList = ({ containerEl, history }: Props): void => {
+const pageItems = 20;
+
+const appendHistoryItems = (
+    history: FormattedHistoryItem[],
+    page: number,
+    tableEl: HTMLTableElement
+): void => {
     const historyListBenchStart = performance.now();
 
-    const potentialOldListEl = document.getElementById('historyList');
+    for (let i = page * pageItems; i < page * pageItems + pageItems && i < history.length; i++) {
+        const entry = history[i];
 
-    if (potentialOldListEl) {
-        containerEl.removeChild(potentialOldListEl);
-    }
-
-    const tableEl = document.createElement('table');
-    tableEl.id = 'historyList';
-    tableEl.style.marginTop = '30px';
-
-    const headRowEl = document.createElement('tr');
-
-    const thChannelEl = document.createElement('th');
-    thChannelEl.style.width = '18%';
-    thChannelEl.innerText = 'Channel';
-
-    const thVideoEl = document.createElement('th');
-    thVideoEl.innerText = 'Title';
-
-    const thDateEl = document.createElement('th');
-    thDateEl.style.width = '18%';
-    thDateEl.innerText = 'Last viewed';
-
-    const thDurationEl = document.createElement('th');
-    thDurationEl.style.width = '7%';
-    thDurationEl.style.textAlign = 'right';
-    thDurationEl.innerText = 'Dur.';
-
-    const thDoneEl = document.createElement('th');
-    thDoneEl.style.width = '7%';
-    thDoneEl.innerText = 'Done';
-
-    headRowEl.appendChild(thChannelEl);
-    headRowEl.appendChild(thVideoEl);
-    headRowEl.appendChild(thDateEl);
-    headRowEl.appendChild(thDurationEl);
-    headRowEl.appendChild(thDoneEl);
-
-    tableEl.appendChild(headRowEl);
-
-    history.forEach((entry) => {
         const cachedEntryRowEl = entryRowElCache[entry.id];
 
         if (cachedEntryRowEl) {
             tableEl.appendChild(cachedEntryRowEl);
 
-            return;
+            continue;
         }
 
         const entryRowEl = document.createElement('tr');
@@ -101,9 +68,71 @@ export const HistoryList = ({ containerEl, history }: Props): void => {
         }
 
         tableEl.appendChild(entryRowEl);
-    });
+    }
+
+    console.debug(`SFYT: HistoryList: ${performance.now() - historyListBenchStart} ms`);
+};
+
+export const HistoryList = ({ containerEl, history }: Props): void => {
+    let page = 0;
+
+    const potentialOldListEl = document.getElementById('historyList');
+
+    if (potentialOldListEl) {
+        containerEl.removeChild(potentialOldListEl);
+    }
+
+    const tableEl = document.createElement('table');
+    tableEl.id = 'historyList';
+    tableEl.style.marginTop = '32px';
+    tableEl.style.marginBottom = '8px';
+
+    const headRowEl = document.createElement('tr');
+
+    const thChannelEl = document.createElement('th');
+    thChannelEl.style.width = '18%';
+    thChannelEl.innerText = 'Channel';
+
+    const thTitleEl = document.createElement('th');
+    thTitleEl.style.paddingBottom = "4px";
+    thTitleEl.innerText = 'Title';
+
+    const thDateEl = document.createElement('th');
+    thDateEl.style.width = '18%';
+    thDateEl.innerText = 'Last viewed';
+
+    const thDurationEl = document.createElement('th');
+    thDurationEl.style.width = '7%';
+    thDurationEl.style.textAlign = 'right';
+    thDurationEl.innerText = 'Dur.';
+
+    const thDoneEl = document.createElement('th');
+    thDoneEl.style.width = '7%';
+    thDoneEl.innerText = 'Done';
+
+    headRowEl.appendChild(thChannelEl);
+    headRowEl.appendChild(thTitleEl);
+    headRowEl.appendChild(thDateEl);
+    headRowEl.appendChild(thDurationEl);
+    headRowEl.appendChild(thDoneEl);
+
+    tableEl.appendChild(headRowEl);
+
+    appendHistoryItems(history, page, tableEl);
+
+    const historyListEventListener = (): void => {
+        if (
+            history.length > page * pageItems &&
+            window.scrollY + window.innerHeight > tableEl.clientHeight - 20
+        ) {
+            page++;
+            appendHistoryItems(history, page, tableEl);
+        }
+    };
+
+    window.removeEventListener('scroll', historyListEventListener);
+
+    window.addEventListener('scroll', historyListEventListener);
 
     containerEl.appendChild(tableEl);
-
-    console.debug('SFYT: HistoryList: ' + (performance.now() - historyListBenchStart) + ' ms');
 };

@@ -35,9 +35,9 @@ import type { HistoryItem, SavedHistoryItems } from './types';
 
             if (jumpedToPosition && htmlVideoPlayer.paused) {
                 console.debug(
-                    'SFYT: Early return: DOM access in interval: ' +
-                        (performance.now() - domAccessBenchStart) +
-                        ' ms'
+                    `SFYT: Early return: DOM access in interval: ${
+                        performance.now() - domAccessBenchStart
+                    } ms`
                 );
 
                 return;
@@ -115,9 +115,7 @@ import type { HistoryItem, SavedHistoryItems } from './types';
         }
 
         console.debug(
-            'SFYT: DOM access in interval: ' +
-                (performance.now() - domAccessBenchStart) +
-                ' ms'
+            `SFYT: DOM access in interval: ${performance.now() - domAccessBenchStart} ms`
         );
     }, 1000);
 })();
