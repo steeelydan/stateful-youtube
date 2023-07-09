@@ -94,7 +94,7 @@ export const HistoryList = ({ containerEl, history }: Props): void => {
     const headRowEl = document.createElement('tr');
 
     const thChannelEl = document.createElement('th');
-    thChannelEl.style.width = '18%';
+    thChannelEl.style.width = '20%';
     thChannelEl.innerText = 'Channel';
 
     const thTitleEl = document.createElement('th');
@@ -102,7 +102,7 @@ export const HistoryList = ({ containerEl, history }: Props): void => {
     thTitleEl.innerText = 'Title';
 
     const thDateEl = document.createElement('th');
-    thDateEl.style.width = '18%';
+    thDateEl.style.width = '20%';
     thDateEl.innerText = 'Last viewed';
 
     const thDurationEl = document.createElement('th');
