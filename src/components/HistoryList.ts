@@ -73,6 +73,8 @@ const appendHistoryItems = (
     console.debug(`SFYT: HistoryList: ${performance.now() - historyListBenchStart} ms`);
 };
 
+let historyListEventListener: () => void;
+
 export const HistoryList = ({ containerEl, history }: Props): void => {
     let page = 0;
 
@@ -81,6 +83,8 @@ export const HistoryList = ({ containerEl, history }: Props): void => {
     if (potentialOldListEl) {
         containerEl.removeChild(potentialOldListEl);
     }
+
+    window.removeEventListener('scroll', historyListEventListener);
 
     const tableEl = document.createElement('table');
     tableEl.id = 'historyList';
@@ -94,7 +98,7 @@ export const HistoryList = ({ containerEl, history }: Props): void => {
     thChannelEl.innerText = 'Channel';
 
     const thTitleEl = document.createElement('th');
-    thTitleEl.style.paddingBottom = "4px";
+    thTitleEl.style.paddingBottom = '4px';
     thTitleEl.innerText = 'Title';
 
     const thDateEl = document.createElement('th');
@@ -120,7 +124,7 @@ export const HistoryList = ({ containerEl, history }: Props): void => {
 
     appendHistoryItems(history, page, tableEl);
 
-    const historyListEventListener = (): void => {
+    historyListEventListener = (): void => {
         if (
             history.length > page * pageItems &&
             window.scrollY + window.innerHeight > tableEl.clientHeight - 20
@@ -129,8 +133,6 @@ export const HistoryList = ({ containerEl, history }: Props): void => {
             appendHistoryItems(history, page, tableEl);
         }
     };
-
-    window.removeEventListener('scroll', historyListEventListener);
 
     window.addEventListener('scroll', historyListEventListener);
 

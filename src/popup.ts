@@ -58,6 +58,10 @@ import type { FormattedHistoryItem, HistoryItem } from './types';
 
         console.debug(`SFYT: Search filtering: ${performance.now() - searchBenchStart} ms`);
 
+        if (window.scrollY > 0) {
+            window.scrollTo({ top: 0 });
+        }
+
         HistoryList({ containerEl: appContainerEl, history: filteredHistory });
     };
 
