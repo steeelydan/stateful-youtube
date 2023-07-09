@@ -26,6 +26,7 @@ const getHistory = async (): Promise<SavedHistoryItems> => {
         const history = await getHistory();
 
         let files: FileList | null = null;
+        let importDialogEl: HTMLFormElement | null = null;
 
         const optionsContainerEl = document.createElement('div');
 
@@ -60,7 +61,10 @@ const getHistory = async (): Promise<SavedHistoryItems> => {
         importButtonEl.innerText = 'Import';
 
         importButtonEl.onclick = (): void => {
-            const importDialogEl = document.createElement('form');
+            if (importDialogEl) {
+                optionsContainerEl.removeChild(importDialogEl);
+            }
+            importDialogEl = document.createElement('form');
 
             const importInputEl = document.createElement('input');
             importInputEl.type = 'file';
@@ -75,7 +79,7 @@ const getHistory = async (): Promise<SavedHistoryItems> => {
             importSubmitEl.onclick = async (event): Promise<void> => {
                 event.preventDefault();
 
-                if (files) {
+                if (files && importDialogEl) {
                     const text = await files[0].text();
                     const importedHistory = JSON.parse(text);
 
