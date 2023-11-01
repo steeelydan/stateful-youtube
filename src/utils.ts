@@ -1,3 +1,5 @@
+import type { FormattedHistoryItem, HistoryItem } from './types';
+
 export const fracSecondsToTime = (fracSeconds: number): string => {
     let time = '';
 
@@ -24,4 +26,33 @@ export const fracSecondsToTime = (fracSeconds: number): string => {
     time += secondsString;
 
     return time;
+};
+
+export const upsertHistoryItem = async (
+    itemId: string,
+    historyItem: HistoryItem
+): Promise<void> => {
+    await browser.storage.local.set({ ['video_' + itemId]: historyItem });
+};
+
+export const getFormattedHistoryFromStorage = async (): Promise<FormattedHistoryItem[] | null> => {
+    const allItems = await browser.storage.local.get();
+    const allItemsEntries = Object.entries(allItems);
+
+    const formattedHistory: FormattedHistoryItem[] = [];
+
+    for (let i = 0; i < allItemsEntries.length; i++) {
+        if (allItemsEntries[i][0].startsWith('video_')) {
+            const historyItem: HistoryItem = allItemsEntries[i][1] as HistoryItem;
+
+            formattedHistory.push({
+                ...historyItem,
+                id: allItemsEntries[i][0].slice(6),
+                searchChannel: historyItem.channel.toLowerCase(),
+                searchTitle: historyItem.title.toLowerCase()
+            });
+        }
+    }
+
+    return formattedHistory;
 };

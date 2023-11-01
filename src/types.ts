@@ -4,6 +4,7 @@ export type HistoryItem = {
     updated: string;
     time: number;
     duration: number;
+    starred?: boolean;
 };
 
 export type SavedHistoryItems = { [videoId: string]: HistoryItem };

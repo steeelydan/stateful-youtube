@@ -12,6 +12,7 @@ export const TopBar = ({ containerEl, onSearchInput }: Props): void => {
     topBarEl.style.left = '0px';
     topBarEl.style.padding = '4px';
     topBarEl.style.background = 'white';
+    topBarEl.style.zIndex = '100';
     topBarEl.style.boxShadow = 'rgba(0, 0, 0, 0.16) 0px 1px 4px';
     topBarEl.style.justifyContent = 'space-between';
 

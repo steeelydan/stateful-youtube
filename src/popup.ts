@@ -1,7 +1,7 @@
 import { HistoryList } from './components/HistoryList';
 import { TopBar } from './components/TopBar';
 
-import type { FormattedHistoryItem, HistoryItem } from './types';
+import { getFormattedHistoryFromStorage } from './utils';
 
 (async (): Promise<void> => {
     const benchStart = performance.now();
@@ -12,22 +12,12 @@ import type { FormattedHistoryItem, HistoryItem } from './types';
         return;
     }
 
-    const allItems = await browser.storage.local.get();
-    const allItemsEntries = Object.entries(allItems);
+    let formattedHistory = await getFormattedHistoryFromStorage();
 
-    let formattedHistory: FormattedHistoryItem[] = [];
+    if (!formattedHistory) {
+        console.error('Error reading formatted history');
 
-    for (let i = 0; i < allItemsEntries.length; i++) {
-        if (allItemsEntries[i][0].startsWith('video_')) {
-            const historyItem: HistoryItem = allItemsEntries[i][1] as HistoryItem;
-
-            formattedHistory.push({
-                ...historyItem,
-                id: allItemsEntries[i][0].slice(6),
-                searchChannel: historyItem.channel.toLowerCase(),
-                searchTitle: historyItem.title.toLowerCase()
-            });
-        }
+        return;
     }
 
     formattedHistory = formattedHistory.sort((a, b) => (a.updated > b.updated ? -1 : 1));
@@ -37,6 +27,10 @@ import type { FormattedHistoryItem, HistoryItem } from './types';
     let filteredHistory = formattedHistory;
 
     const onSearchInput = (searchString: string): void => {
+        if (!formattedHistory) {
+            return;
+        }
+
         const searchBenchStart = performance.now();
 
         const lowerSearchString = searchString.toLowerCase().trim();

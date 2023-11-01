@@ -1,3 +1,5 @@
+import { upsertHistoryItem } from './utils';
+
 import type { HistoryItem, SavedHistoryItems } from './types';
 
 (async (): Promise<void> => {
@@ -113,7 +115,7 @@ import type { HistoryItem, SavedHistoryItems } from './types';
                 duration: duration
             };
 
-            browser.storage.local.set({ ['video_' + videoId]: historyItem });
+            await upsertHistoryItem(videoId, historyItem);
 
             jumpedToPosition = true;
         }
