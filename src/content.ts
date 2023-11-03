@@ -30,6 +30,7 @@ import type { HistoryItem, SavedHistoryItems } from './types';
             }
 
             const videoId = url.searchParams.get('v');
+            const playlistId = url.searchParams.get('list');
 
             if (!videoId) {
                 return;
@@ -109,6 +110,7 @@ import type { HistoryItem, SavedHistoryItems } from './types';
             // We always write the whole current data.
             historyItem = {
                 channel: channelLink.innerText,
+                playlistId: playlistId || undefined,
                 title: titleDiv.innerText,
                 updated: new Date().toISOString(),
                 time: time,

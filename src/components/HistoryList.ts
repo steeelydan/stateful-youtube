@@ -16,6 +16,7 @@ const changeStarred = async (
 ): Promise<void> => {
     const updatedHistoryItem: HistoryItem = {
         channel: item.channel,
+        playlistId: item.playlistId,
         duration: item.duration,
         time: item.time,
         title: item.title,
@@ -67,7 +68,11 @@ const appendHistoryItems = (
         ytLinkEl.innerText = historyItem.title;
         ytLinkEl.target = '_blank';
         ytLinkEl.rel = 'noopener noreferrer';
-        const newUrl = new URL('https://www.youtube.com/watch?v=' + historyItem.id);
+        const newUrl = new URL('https://www.youtube.com/watch');
+        newUrl.searchParams.set('v', historyItem.id);
+        if (historyItem.playlistId) {
+            newUrl.searchParams.set('list', historyItem.playlistId);
+        }
         ytLinkEl.href = `${newUrl.toString()}`;
 
         const entryChannelColEl = document.createElement('td');

@@ -1,5 +1,6 @@
 export type HistoryItem = {
     channel: string;
+    playlistId?: string;
     title: string;
     updated: string;
     time: number;
