@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "Stateful YouTube",
-    "version": "0.4.0",
+    "version": "0.5.0",
     "description": "Save watched YouTube videos & playing positions",
     "content_scripts": [
         {
@@ -14,7 +14,10 @@
         "page": "public/options.html",
         "browser_style": true
     },
-    "icons": {},
+    "icons": {
+        "48": "/media/icon-48.png",
+        "96": "/media/icon-96.png"
+    },
     "browser_action": {
         "browser_style": true,
         "default_popup": "public/popup.html",
