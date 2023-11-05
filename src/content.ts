@@ -56,16 +56,14 @@ import type { HistoryItem, SavedHistoryItems } from './types';
                 return;
             }
 
-            if (!historyItem) {
-                const savedHistoryItem: SavedHistoryItems = (await browser.storage.local.get(
-                    'video_' + videoId
-                )) as SavedHistoryItems;
+            const savedHistoryItem: SavedHistoryItems = (await browser.storage.local.get(
+                'video_' + videoId
+            )) as SavedHistoryItems;
 
-                console.debug('SFYT: Got historyItem from storage');
+            console.debug('SFYT: Got historyItem from storage');
 
-                if (savedHistoryItem) {
-                    historyItem = savedHistoryItem['video_' + videoId];
-                }
+            if (savedHistoryItem) {
+                historyItem = savedHistoryItem['video_' + videoId];
             }
 
             // We do not abort if historyItem missing - in this case we've simply not seen the video before.
@@ -114,7 +112,8 @@ import type { HistoryItem, SavedHistoryItems } from './types';
                 title: titleDiv.innerText,
                 updated: new Date().toISOString(),
                 time: time,
-                duration: duration
+                duration: duration,
+                starred: historyItem?.starred
             };
 
             await upsertHistoryItem(videoId, historyItem);
