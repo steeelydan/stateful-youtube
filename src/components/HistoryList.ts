@@ -68,11 +68,14 @@ const appendHistoryItems = (
         ytLinkEl.innerText = historyItem.title;
         ytLinkEl.target = '_blank';
         ytLinkEl.rel = 'noopener noreferrer';
+
         const newUrl = new URL('https://www.youtube.com/watch');
         newUrl.searchParams.set('v', historyItem.id);
         if (historyItem.playlistId) {
             newUrl.searchParams.set('list', historyItem.playlistId);
         }
+        newUrl.searchParams.set('t', historyItem.time.toFixed());
+
         ytLinkEl.href = `${newUrl.toString()}`;
 
         const entryChannelColEl = document.createElement('td');

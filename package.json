@@ -1,6 +1,6 @@
 {
     "name": "stateful-youtube",
-    "version": "0.5.2",
+    "version": "0.6.0",
     "author": "",
     "license": "ISC",
     "description": "Save watched YouTube videos & playing positions",
